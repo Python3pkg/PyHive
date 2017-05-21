@@ -4,8 +4,8 @@ These rely on having a Presto+Hadoop cluster set up.
 They also require a tables created by make_test_tables.sh.
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+
+
 
 import contextlib
 import os

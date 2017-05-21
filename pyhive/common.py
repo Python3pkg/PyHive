@@ -3,14 +3,14 @@
 Many docstrings in this file are based on PEP-249, which is in the public domain.
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+
+
 from builtins import bytes
 from builtins import int
 from builtins import object
 from builtins import range
 from builtins import str
-from past.builtins import basestring
+from past.builtins import str
 from pyhive import exc
 import abc
 import collections
@@ -217,7 +217,7 @@ class DBAPITypeObject(object):
 class ParamEscaper(object):
     def escape_args(self, parameters):
         if isinstance(parameters, dict):
-            return {k: self.escape_item(v) for k, v in parameters.items()}
+            return {k: self.escape_item(v) for k, v in list(parameters.items())}
         elif isinstance(parameters, (list, tuple)):
             return tuple(self.escape_item(x) for x in parameters)
         else:
@@ -239,7 +239,7 @@ class ParamEscaper(object):
         return "'{}'".format(item.replace("'", "''"))
 
     def escape_sequence(self, item):
-        l = map(str, map(self.escape_item, item))
+        l = list(map(str, list(map(self.escape_item, item))))
         return '(' + ','.join(l) + ')'
 
     def escape_item(self, item):
@@ -247,7 +247,7 @@ class ParamEscaper(object):
             return 'NULL'
         elif isinstance(item, (int, float)):
             return self.escape_number(item)
-        elif isinstance(item, basestring):
+        elif isinstance(item, str):
             return self.escape_string(item)
         elif isinstance(item, collections.Iterable):
             return self.escape_sequence(item)

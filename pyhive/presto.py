@@ -5,8 +5,8 @@ See http://www.python.org/dev/peps/pep-0249/
 Many docstrings in this file are based on the PEP, which is in the public domain.
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+
+
 from builtins import object
 from pyhive import common
 from pyhive.common import DBAPITypeObject
@@ -21,7 +21,7 @@ from requests.auth import HTTPBasicAuth
 try:  # Python 3
     import urllib.parse as urlparse
 except ImportError:  # Python 2
-    import urlparse
+    import urllib.parse
 
 
 # PEP 249 module globals
@@ -167,7 +167,7 @@ class Cursor(common.DBAPICursor):
         if self._session_props:
             headers['X-Presto-Session'] = ','.join(
                 '{}={}'.format(propname, propval)
-                for propname, propval in self._session_props.items()
+                for propname, propval in list(self._session_props.items())
             )
 
         # Prepare statement
@@ -179,7 +179,7 @@ class Cursor(common.DBAPICursor):
         self._reset_state()
 
         self._state = self._STATE_RUNNING
-        url = urlparse.urlunparse((
+        url = urllib.parse.urlunparse((
             self._protocol,
             '{}:{}'.format(self._host, self._port), '/v1/statement', None, None, None))
         _logger.info('%s', sql)
@@ -257,7 +257,7 @@ class Cursor(common.DBAPICursor):
             assert self._columns
             new_data = response_json['data']
             self._decode_binary(new_data)
-            self._data += map(tuple, new_data)
+            self._data += list(map(tuple, new_data))
         if 'nextUri' not in response_json:
             self._state = self._STATE_FINISHED
         if 'error' in response_json:

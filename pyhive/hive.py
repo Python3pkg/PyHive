@@ -5,8 +5,8 @@ See http://www.python.org/dev/peps/pep-0249/
 Many docstrings in this file are based on the PEP, which is in the public domain.
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+
+
 from TCLIService import TCLIService
 from TCLIService import constants
 from TCLIService import ttypes
@@ -290,7 +290,7 @@ class Cursor(common.DBAPICursor):
         response = self._connection.client.FetchResults(req)
         _check_status(response)
         assert not response.results.rows, 'expected data in columnar format'
-        columns = map(_unwrap_column, response.results.columns)
+        columns = list(map(_unwrap_column, response.results.columns))
         new_data = list(zip(*columns))
         self._data += new_data
         # response.hasMoreRows seems to always be False, so we instead check the number of rows

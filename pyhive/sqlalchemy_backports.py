@@ -39,10 +39,10 @@ def str_to_datetime_processor_factory(regexp, type_):
                                 "'%s'" % (type_.__name__, value))
             if has_named_groups:
                 groups = m.groupdict(0)
-                return type_(**dict(zip(groups.iterkeys(),
-                                        map(int, groups.itervalues()))))
+                return type_(**dict(list(zip(iter(groups.keys()),
+                                        list(map(int, iter(groups.values())))))))
             else:
-                return type_(*map(int, m.groups(0)))
+                return type_(*list(map(int, m.groups(0))))
     return process
 
 
@@ -92,7 +92,7 @@ def cache(fn, self, con, *args, **kw):
     key = (
             fn.__name__,
             tuple(a for a in args if isinstance(a, util.string_types)),
-            tuple((k, v) for k, v in kw.items() if
+            tuple((k, v) for k, v in list(kw.items()) if
                     isinstance(v,
                         util.string_types + util.int_types + (float, )
                     )
